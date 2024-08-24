@@ -16,7 +16,7 @@ jobs:
       - name: Setup Node.js
         uses: actions/setup-node@v3
         with:
-          node-version: "16" # Specify the Node.js version you are using
+          node-version: "20" # Specify the Node.js version you are using
 
       - name: Install dependencies
         run: npm install
@@ -33,5 +33,5 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          scp -r ./build azureuser@apache-react.bimash.com.np:/var/www/apache-react.bimash.com.np/
-          ssh azureuser@apache-react.bimash.com.np "sudo systemctl restart apache2"
+          scp -r ./build ${{secrets.VPS_USER_IP}}:/var/www/apache-react.bimash.com.np/
+          ssh ${{secrets.VPS_USER_IP}} "sudo systemctl restart apache2"
