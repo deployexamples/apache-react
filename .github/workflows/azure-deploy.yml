@@ -1,0 +1,37 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main # Trigger on push to the main branch
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: "16" # Specify the Node.js version you are using
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build the project
+        run: npm run build # This will create a 'build' directory with your production-ready files
+
+      - name: Setup SSH
+        run: |
+          mkdir -p ~/.ssh
+          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
+          chmod 600 ~/.ssh/id_ed25519
+          ssh-keyscan apache-react.bimash.com.np >> ~/.ssh/known_hosts
+
+      - name: Deploy to VPS
+        run: |
+          scp -r ./build azureuser@apache-react.bimash.com.np:/var/www/apache-react.bimash.com.np/
+          ssh azureuser@apache-react.bimash.com.np "sudo systemctl restart apache2"
