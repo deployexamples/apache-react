@@ -33,5 +33,5 @@ jobs:
 
       - name: Deploy to VPS
         run: |
-          scp -r ./build ${{secrets.VPS_USER_IP}}:/var/www/apache-react.bimash.com.np/
-          ssh ${{secrets.VPS_USER_IP}} "sudo systemctl restart apache2"
+          scp -r ./build azureuser@20.51.207.28:/var/www/apache-react.bimash.com.np/
+          ssh azureuser@20.51.207.28 "sudo systemctl restart apache2"
