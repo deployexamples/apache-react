@@ -32,17 +32,11 @@ jobs:
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
           script: |
-            cd /var/www/apache-react.bimash.com.np/
-            rm -rf *
-            cp -r $GITHUB_WORKSPACE/build/* .
+            cd apache/apache-react/
+            pnpm install
+            pnpm build
+            sudo rm -rf /var/www/apache-react.bimash.com.np/
+            sudo mkdir -p /var/www/apache-react.bimash.com.np/
+            sudo mv apache/apache-react/dist/* /var/www/apache-react.bimash.com.np
 
-      - name: 🔄 Restart Server (Optional)
-        uses: appleboy/ssh-action@master
-        with:
-          host: ${{ secrets.HOST }}
-          username: ${{ secrets.USER }}
-          key: ${{ secrets.SSH_PRIVATE_KEY }}
-          port: 22
-          script: |
-            cd /var/www/apache-react.bimash.com.np/
-            sudo systemctl restart apache2
+          # Copy files from the github dist folder to the server
