@@ -31,8 +31,10 @@ jobs:
           username: ${{ secrets.USER }}
           key: ${{ secrets.SSH_PRIVATE_KEY }}
           port: 22
-          source: "./dist/*"
-          target: "/var/www/apache-react.bimash.com.np/"
+          script: |
+            cd /var/www/apache-react.bimash.com.np/
+            rm -rf *
+            cp -r $GITHUB_WORKSPACE/build/* .
 
       - name: 🔄 Restart Server (Optional)
         uses: appleboy/ssh-action@master
