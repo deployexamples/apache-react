@@ -154,3 +154,104 @@ Make sure your domain's DNS records point to your server's IP address. This is d
 
 Open a web browser and go to http://yourdomain.com. You should see the "Welcome to yourdomain.com" message you added in the index.html file.
 If you need to use SSL (HTTPS), you can obtain and configure an SSL certificate using Let's Encrypt with Certbot. This is often required for modern web standards.
+
+## Manual Deployment
+
+### Step 1: Clone the Repository
+
+```bash
+  git clone
+```
+
+### Step 2: Install Dependencies
+
+```bash
+  cd apache-react
+  npm install
+```
+
+### Step 3: Build the Project
+
+```bash
+  npm run build
+```
+
+### Step 4: Deploy the Project
+
+#### Change Directory and Remove Files:
+
+```bash
+  cd /var/www/apache-react.bimash.com.np/
+  rm -rf *
+```
+
+or
+
+#### Remove the existing files and Create a new Directory:
+
+```bash
+  sudo rm -rf /var/www/yourdomain.com/*
+  sudo mkdir -p /var/www/yourdomain.com/
+```
+
+#### Move the Build Files to the Directory:
+
+```bash
+  sudo mv your/path/of/apache-react/dist/* /var/www/yourdomain.com/
+  sudo systemctl restart apache2
+```
+
+## CI/CD Pipeline Deployment
+
+Below is the sample CI/CD pipeline for deploying the frontend on push to the main branch. The pipeline uses SSH to connect to the server and deploy the code.
+
+```yaml
+name: 🚀 Deploy frontend on push
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  web-deploy:
+    name: 🎉 Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: 🚚 Get latest code
+        uses: actions/checkout@v3
+
+      - name: Use Node.js 20
+        uses: actions/setup-node@v2
+        with:
+          node-version: "20"
+
+      - name: 🔨 Install Packages and Build
+        run: |
+          npm install
+          npm run build
+
+      - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.SSH_PRIVATE_KEY }}
+
+      - name: Deploy to Azure VM
+        run: |
+          ssh -o StrictHostKeyChecking=no azureuser@20.51.207.28 << 'EOF'
+          cd path/for/apache-react/
+          git pull origin main
+          pnpm install
+          pnpm build
+          sudo rm -rf /var/www/<yourdomain.com>/
+          sudo mkdir -p /var/www/<yourdomain.com>/
+          cd
+          sudo mv path/for/apache-react/dist/* /var/www/<yourdomain.com>/
+          sudo systemctl restart apache2
+          EOF
+```
+
+## Conclusion
+
+You have successfully set up Apache on your server and configured it to serve a website based on a domain name. You can now deploy your website files to the server and access them using your domain name.
