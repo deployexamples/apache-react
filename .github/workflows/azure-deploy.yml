@@ -37,6 +37,7 @@ jobs:
           pnpm build
           sudo rm -rf /var/www/apache-react.bimash.com.np/
           sudo mkdir -p /var/www/apache-react.bimash.com.np/
+          cd
           sudo mv apache/apache-react/dist/* /var/www/apache-react.bimash.com.np
           sudo systemctl restart apache2
           EOF
