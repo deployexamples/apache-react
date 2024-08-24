@@ -24,18 +24,12 @@ jobs:
       - name: Build the project
         run: npm run build
 
-      - name: Setup SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.VPS_SSH_KEY }}" > ~/.ssh/id_ed25519
-          chmod 600 ~/.ssh/id_ed25519
-          ssh-keyscan -t rsa 20.51.207.28 >> ~/.ssh/known_hosts
+       - name: Set up SSH
+        uses: webfactory/ssh-agent@v0.7.0
+        with:
+          ssh-private-key: ${{ secrets.VPS_SSH_KEY }}
 
-      - name: Test SSH Connection
-        run: |
-          ssh -v azureuser@20.51.207.28 "echo 'SSH connection successful!'"
-
-      - name: Deploy to VPS
+      - name: Deploy to Azure
         run: |
           scp -r ./build azureuser@20.51.207.28:/var/www/apache-react.bimash.com.np/
           ssh azureuser@20.51.207.28 "sudo systemctl restart apache2"
