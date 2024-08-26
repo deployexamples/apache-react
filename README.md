@@ -86,9 +86,9 @@ ServerAdmin admin@yourdomain.com
 ServerName yourdomain.com
 ServerAlias www.yourdomain.com
 
-    DocumentRoot /var/www/yourdomain.com
+    DocumentRoot /path/to/your/website/files
 
-    <Directory /var/www/yourdomain.com>
+    <Directory /path/to/your/website/files>
         Options Indexes FollowSymLinks
         AllowOverride All
         Require all granted
@@ -105,28 +105,7 @@ ServerAlias www.yourdomain.com
 - ServerAlias: Additional domain names (e.g., www.yourdomain.com).
 - DocumentRoot: The directory where your website files are located.
 
-### Step 3: Create the Document Root Directory
-
-#### Create the directory:
-
-```bash
-sudo mkdir -p /var/www/yourdomain.com
-```
-
-#### Set the appropriate permissions:
-
-```bash
-sudo chown -R $USER:$USER /var/www/yourdomain.com
-sudo chmod -R 755 /var/www/yourdomain.com
-```
-
-#### Add an index.html file (for testing):
-
-```bash
-echo "<html><h1>Welcome to yourdomain.com</h1></html>" | sudo tee /var/www/yourdomain.com/index.html
-```
-
-### Step 4: Enable the Virtual Host Configuration
+### Step 3: Enable the Virtual Host Configuration
 
 #### Enable the new virtual host:
 
@@ -146,7 +125,7 @@ sudo a2dissite 000-default.conf
 sudo systemctl restart apache2
 ```
 
-### Step 5: Update DNS Records
+### Step 4: Update DNS Records
 
 Make sure your domain's DNS records point to your server's IP address. This is done through your domain registrar's control panel.
 
@@ -174,31 +153,6 @@ If you need to use SSL (HTTPS), you can obtain and configure an SSL certificate 
 
 ```bash
   npm run build
-```
-
-### Step 4: Deploy the Project
-
-#### Change Directory and Remove Files:
-
-```bash
-  cd /var/www/apache-react.bimash.com.np/
-  rm -rf *
-```
-
-or
-
-#### Remove the existing files and Create a new Directory:
-
-```bash
-  sudo rm -rf /var/www/yourdomain.com/*
-  sudo mkdir -p /var/www/yourdomain.com/
-```
-
-#### Move the Build Files to the Directory:
-
-```bash
-  sudo mv your/path/of/apache-react/dist/* /var/www/yourdomain.com/
-  sudo systemctl restart apache2
 ```
 
 ## CI/CD Pipeline Deployment
@@ -244,10 +198,6 @@ jobs:
           git pull origin main
           pnpm install
           pnpm build
-          sudo rm -rf /var/www/<yourdomain.com>/
-          sudo mkdir -p /var/www/<yourdomain.com>/
-          cd
-          sudo mv path/for/apache-react/dist/* /var/www/<yourdomain.com>/
           sudo systemctl restart apache2
           EOF
 ```
