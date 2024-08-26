@@ -1,4 +1,4 @@
-# apache-wordpress
+# apache-react
 
 wordpress with apache server and mysql database at specified domain
 
